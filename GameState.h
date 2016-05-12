@@ -2,8 +2,8 @@
 class GameState
 {
 public:
-	enum PropablyGameState {MENU,PLAY,GAME_OVER,EXIT};
-	PropablyGameState State;
+	enum Game_State {MENU,PLAY,GAME_OVER,EXIT};
+	Game_State State;
 	GameState();
 	~GameState();
 };
