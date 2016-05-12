@@ -13,6 +13,7 @@ void engine::displayGame()
 	sf::Clock appleClock;
 	sf::Clock moveClock;
 	int fps = 0;
+	map.addMap();
 	while (gameState->State == GameState::PLAY)
 	{
 		while (window->pollEvent(event))
@@ -53,10 +54,13 @@ void engine::displayGame()
 			}
 			collisionWithApple();
 			collisionWithSnake();
-			if (appleClock.getElapsedTime() > sf::seconds(GameInfo::appleDelay) || Apple.mapAppleArray.empty())
+			collisionWithWall();
+			if (appleClock.getElapsedTime() > sf::seconds(GameInfo::appleDelay) || Apple.mapAppleArray.empty()||containFlag)
 			{
 				Apple.addApple(randomizer(GameInfo::length), randomizer(GameInfo::height));
+				WallContainApple();
 				appleClock.restart();
+				containFlag = false;
 			}
 			if (moveClock.getElapsedTime() > sf::milliseconds(GameInfo::snakeSpeed * 100 - Snake.points / 10))
 			{
@@ -65,10 +69,12 @@ void engine::displayGame()
 			}
 			isOutOfScreen();
 			window->clear();
+			window->draw(map);
 			window->draw(Apple);
 			window->draw(Snake);
 			drawPoints();
 			window->display();
+			
 		}
 		else
 		{
@@ -151,6 +157,25 @@ void engine::gameOver()
 	text.setString(std::to_string(Snake.points));
 	window->draw(text);
 	window->display();
+}
+void engine::collisionWithWall()
+{
+	for (size_t i = 0; i < map.mapWallArray.size(); i++)
+	{
+		if (map.mapWallArray[i].rect.getGlobalBounds().intersects(Snake.snakePartArray[0].rect.getGlobalBounds()))
+			pause = true;
+	}
+}
+void engine::WallContainApple()
+{
+	for (size_t i = 0; i < map.mapWallArray.size(); i++)
+	{
+		if (map.mapWallArray[i].rect.getGlobalBounds().intersects((Apple.mapAppleArray[Apple.mapAppleArray.size() - 1].rect.getGlobalBounds())))
+		{
+			Apple.mapAppleArray.pop_back();
+			containFlag = true;
+		}
+	}
 }
 engine::~engine()
 {

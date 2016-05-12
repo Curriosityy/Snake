@@ -8,5 +8,5 @@ public:
 	static const int snakeSizeStart = 3;
 	static const int snakeSpeed = 1;
 	static const int pointsAdd = 10;
-	static const int appleDelay = 5;
+	static const int appleDelay = 1;
 };
